@@ -8,6 +8,8 @@ import java.util.Map;
 import com.google.gson.Gson;
 import org.apache.apisix.plugin.runner.HttpRequest;
 import org.apache.apisix.plugin.runner.HttpResponse;
+import org.apache.apisix.plugin.runner.PostRequest;
+import org.apache.apisix.plugin.runner.PostResponse;
 import org.apache.apisix.plugin.runner.filter.PluginFilter;
 import org.apache.apisix.plugin.runner.filter.PluginFilterChain;
 import org.springframework.stereotype.Component;
@@ -86,42 +88,8 @@ public class RewriteRequestDemoFilter implements
     }
 
     @Override
-    public void filter(HttpRequest request, HttpResponse response, PluginFilterChain chain) {
-        /*
-         * If the conf you configured is of type json, you can convert it to Map or json.
-         */
-        System.out.println("BRUH123");
-        String configStr = request.getConfig(this);
-        Gson gson = new Gson();
-        Map<String, Object> conf = new HashMap<>();
-        conf = gson.fromJson(configStr, conf.getClass());
-
-        /*
-         * You can use the parameters in the configuration.
-         */
-
-        // note: the path to the rewrite must start with '/'
-        request.setPath((String) conf.get("rewrite_path"));
-        request.setHeader((String) conf.get("conf_header_name"), (String) conf.get("conf_header_value"));
-        /* note: The value of the parameter is currently a string type.
-                 If you need the json type, you need the upstream service to parse the string value to json.
-                 For example, if the arg is set as below
-                 request.setArg("new arg", "{\"key1\":\"value1\",\"key2\":2}");
-                 The arg received by the upstream service will be as below
-                 "new arg": "{\"key1\":\"value1\",\"key2\":2}"
-         */
-        request.setArg((String) conf.get("conf_arg_name"), (String) conf.get("conf_arg_value"));
-
-        /*
-         * You can fetch the Nginx variables, and the request body
-         */
-        String remoteAddr = request.getVars("remote_addr");
-        String serverPort = request.getVars("server_port");
-        String body = request.getBody();
-
-        System.out.println("BRUH");
-
-        chain.filter(request, response);
+    public void postFilter(PostRequest request, PostResponse response, PluginFilterChain chain) {
+        chain.postFilter(request, response);
     }
 
     /**
