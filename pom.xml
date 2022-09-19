@@ -15,6 +15,8 @@
     <description>demo</description>
     <properties>
         <java.version>11</java.version>
+        <compiler.version>11</compiler.version>
+        <spring-boot.version>2.7.1</spring-boot.version>
     </properties>
     <dependencies>
         <dependency>
@@ -44,7 +46,7 @@
         <dependency>
             <groupId>org.apache.apisix</groupId>
             <artifactId>apisix-runner-starter</artifactId>
-            <version>0.3.1-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -52,18 +54,28 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>java-plugin-runner-demo</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${compiler.version}</release>
+                    <source>${compiler.version}</source>
+                    <target>${compiler.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
