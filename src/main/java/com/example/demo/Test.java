@@ -2,7 +2,6 @@ package com.example.demo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.apisix.plugin.runner.HttpRequest;
 import org.apache.apisix.plugin.runner.HttpResponse;
@@ -13,25 +12,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DemoFilter implements
+public class Test implements
         PluginFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(DemoFilter.class);
+    private final Logger logger = LoggerFactory.getLogger(Test.class);
 
     @Override
     public String name() {
-        return "DemoFilter";
+        return "Test";
     }
 
     @Override
     public void filter(HttpRequest request, HttpResponse response, PluginFilterChain chain) {
-        logger.warn("DemoFilter is running");
+        logger.warn("Test is running wwww");
         String http_x_test = request.getVars("http_x_test");
         logger.warn("http_x_test: {}", http_x_test);
-        Map<String, String> req = request.getHeaders();
-        logger.warn("header_test: {}", req);
-        String url = request.getPath();
-        logger.warn("path: {}", url);
         chain.filter(request, response);
     }
 
