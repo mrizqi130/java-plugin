@@ -12,21 +12,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @Component
-public class RewriteSignIn implements PluginFilter {
+public class Rewrite implements PluginFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(RewriteSignIn.class);
+    private final Logger logger = LoggerFactory.getLogger(Rewrite.class);
     private final Gson gson = new Gson();
 
     @Override
     public String name() {
-        return "RewriteSignIn";
+        return "Rewrite";
     }
 
     @Override
     public void filter(HttpRequest request, HttpResponse response, PluginFilterChain chain) {
-        logger.warn("RewriteSignIn is running");
+        logger.warn("Rewrite is running");
 
         // Modify the request path
         String originalPath = request.getPath();
@@ -35,16 +36,17 @@ public class RewriteSignIn implements PluginFilter {
         logger.warn("Original path: {}, New path: {}", originalPath, newPath);
 
         // Modify the request body
-        // JsonObject originalBody = gson.fromJson(request.getBody(), JsonObject.class);
-        // JsonObject jsonBody = new JsonObject();
-        response.setHeader("grant_type", "0");
-        response.setHeader("additionalInfo", "{}");
+        String originalBody = request.getBody();
+        JsonObject jsonBody = gson.fromJson(originalBody, JsonObject.class);
+
         // Modify or add new JSON fields
-        // jsonBody.addProperty("username", originalBody.get("nama pengguna").getAsString());
-        // jsonBody.addProperty("password", originalBody.get("kata sandi").getAsString());
-        // String newBody = gson.toJson(jsonBody);
-        // request.setBody(newBody);
-        // logger.warn("Original body: {}, New body: {}", originalBody, jsonBody);
+        jsonBody.addProperty("username", "tdiopenapi");
+        jsonBody.addProperty("password", "TD10p3N4pI");
+
+        String newBody = gson.toJson(jsonBody);
+        request.setBody(newBody);
+        logger.warn("Original body: {}, New body: {}", originalBody, newBody);
+
         // Continue the filter chain
         chain.filter(request, response);
     }

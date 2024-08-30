@@ -14,38 +14,27 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 @Component
-public class RewriteSignIn implements PluginFilter {
+public class RewriteInquiry implements PluginFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(RewriteSignIn.class);
+    private final Logger logger = LoggerFactory.getLogger(RewriteInquiry.class);
     private final Gson gson = new Gson();
 
     @Override
     public String name() {
-        return "RewriteSignIn";
+        return "RewriteInquiry";
     }
 
     @Override
     public void filter(HttpRequest request, HttpResponse response, PluginFilterChain chain) {
-        logger.warn("RewriteSignIn is running");
+        logger.warn("RewriteInquiry is running");
 
         // Modify the request path
         String originalPath = request.getPath();
-        String newPath = "/api/developer/auth/sign-in";
+        String newPath = "/api/v1.0/account-saving/0080210002622";
         request.setPath(newPath);
+        request.setArg("userId", "s1627");
+        request.setArg("financing", "false");
         logger.warn("Original path: {}, New path: {}", originalPath, newPath);
-
-        // Modify the request body
-        // JsonObject originalBody = gson.fromJson(request.getBody(), JsonObject.class);
-        // JsonObject jsonBody = new JsonObject();
-        response.setHeader("grant_type", "0");
-        response.setHeader("additionalInfo", "{}");
-        // Modify or add new JSON fields
-        // jsonBody.addProperty("username", originalBody.get("nama pengguna").getAsString());
-        // jsonBody.addProperty("password", originalBody.get("kata sandi").getAsString());
-        // String newBody = gson.toJson(jsonBody);
-        // request.setBody(newBody);
-        // logger.warn("Original body: {}, New body: {}", originalBody, jsonBody);
-        // Continue the filter chain
         chain.filter(request, response);
     }
 
